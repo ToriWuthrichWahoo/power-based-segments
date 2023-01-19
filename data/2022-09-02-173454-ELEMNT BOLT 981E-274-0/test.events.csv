@@ -1,0 +1,12 @@
+sec,timestamp,timestamp_fit,event,event_code,event_type,event_type_code,data,trigger_type,trigger_type_code,data16,score,opponent_score,event_group,front_gear_num,front_gear,rear_gear_num,rear_gear,
+0,"2022-09-02T17:34:54.000Z",1031074494,"TIMER",0,"START",0,0,"MANUAL",0,,,,,,,,,
+2888,"2022-09-02T18:23:02.000Z",1031077382,"TIMER",0,"STOP",1,1,"AUTO",1,,,,,,,,,
+3015,"2022-09-02T18:25:09.000Z",1031077509,"TIMER",0,"START",0,1,"AUTO",1,,,,,,,,,
+4793,"2022-09-02T18:54:47.000Z",1031079287,"TIMER",0,"STOP",1,1,"AUTO",1,,,,,,,,,
+4878,"2022-09-02T18:56:12.000Z",1031079372,"TIMER",0,"START",0,1,"AUTO",1,,,,,,,,,
+5079,"2022-09-02T18:59:33.000Z",1031079573,"TIMER",0,"STOP",1,1,"AUTO",1,,,,,,,,,
+5207,"2022-09-02T19:01:41.000Z",1031079701,"TIMER",0,"START",0,1,"AUTO",1,,,,,,,,,
+7627,"2022-09-02T19:42:01.000Z",1031082121,"TIMER",0,"STOP",1,0,"MANUAL",0,,,,,,,,,
+7627,"2022-09-02T19:42:01.000Z",1031082121,"TIMER",0,"STOP_ALL",4,0,"",,,,,,,,,,
+7627,"2022-09-02T19:42:01.000Z",1031082121,"SESSION",8,"STOP_DISABLE_ALL",9,,"",,,,,,,,,,
+

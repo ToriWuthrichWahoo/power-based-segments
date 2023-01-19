@@ -1,0 +1,12 @@
+sec,timestamp,timestamp_fit,event,event_code,event_type,event_type_code,data,trigger_type,trigger_type_code,data16,score,opponent_score,event_group,front_gear_num,front_gear,rear_gear_num,rear_gear,
+0,"2018-09-02T12:09:23.000Z",904824563,"TIMER",0,"START",0,0,"MANUAL",0,,,,,,,,,
+12319,"2018-09-02T15:34:42.000Z",904836882,"TIMER",0,"STOP",1,1,"AUTO",1,,,,,,,,,
+12355,"2018-09-02T15:35:18.000Z",904836918,"TIMER",0,"START",0,1,"AUTO",1,,,,,,,,,
+12385,"2018-09-02T15:35:48.000Z",904836948,"TIMER",0,"STOP",1,1,"AUTO",1,,,,,,,,,
+13023,"2018-09-02T15:46:26.000Z",904837586,"TIMER",0,"START",0,1,"AUTO",1,,,,,,,,,
+13031,"2018-09-02T15:46:34.000Z",904837594,"TIMER",0,"STOP",1,1,"AUTO",1,,,,,,,,,
+13035,"2018-09-02T15:46:38.000Z",904837598,"TIMER",0,"START",0,1,"AUTO",1,,,,,,,,,
+13060,"2018-09-02T15:47:03.000Z",904837623,"TIMER",0,"STOP",1,1,"AUTO",1,,,,,,,,,
+13304,"2018-09-02T15:51:07.000Z",904837867,"TIMER",0,"STOP_ALL",4,0,"",,,,,,,,,,
+13304,"2018-09-02T15:51:07.000Z",904837867,"SESSION",8,"STOP_DISABLE_ALL",9,,"",,,,,,,,,,
+

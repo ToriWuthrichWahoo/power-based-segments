@@ -1,0 +1,5 @@
+sec,timestamp,timestamp_fit,event,event_code,event_type,event_type_code,data,trigger_type,trigger_type_code,data16,score,opponent_score,event_group,front_gear_num,front_gear,rear_gear_num,rear_gear,
+0,"2021-06-02T19:45:41.000Z",991597541,"TIMER",0,"START",0,0,"MANUAL",0,,,,,,,,,
+4133,"2021-06-02T20:54:34.000Z",991601674,"TIMER",0,"STOP",1,1,"AUTO",1,,,,,,,,,
+4185,"2021-06-02T20:55:26.000Z",991601726,"TIMER",0,"START",0,1,"AUTO",1,,,,,,,,,
+

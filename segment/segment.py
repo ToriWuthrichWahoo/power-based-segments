@@ -28,6 +28,7 @@ class Segment:
             (activity_df.sec >= segment_start_time_sec)
             & (activity_df.sec <= segment_end_time_sec)
         ]
+        self.true_finish_time = segment_end_time_sec - segment_start_time_sec
 
     def get_segment_avg_power(self) -> float:
         avg_watts = np.mean(self.segment_df["pwr_watts"])

@@ -39,13 +39,14 @@ class SegmentProcessor:
 
             remaining_times[i] = predicted_time[-1]
             total_times[i] = (t[i] - t[0]) + predicted_time[-1]
-        return (total_times, remaining_times)
+        return (t, x0_m, total_times, remaining_times)
 
     def estimate_time_to_finish(
         self,
         power_watts: float,
         segment_distance_traveled_m: float,
         initial_speed_mps: float,
+        power_window_sec=30,
     ):
         # Test method to calculate speed as a function of time
 
@@ -64,8 +65,7 @@ class SegmentProcessor:
             s = spd_out[i - 1]
             x = x_out[i - 1]
 
-            # TODO: refine power
-            power_i = power_watts
+            power_i = self.get_avg_power_last_n_sec(t_out[i], power_window_sec)
 
             # Get the grade based on where we are in the elevation profile
             grade_id = np.argmin(abs(dist - x_out[i - 1]))
@@ -89,3 +89,12 @@ class SegmentProcessor:
             i += 1
 
         return t_out, x_out, spd_out
+
+    def get_avg_power_last_n_sec(self, t, window_size_sec):
+        power = self.segment.segment_df["pwr_watts"].values
+        start_id = max(1, t - window_size_sec)
+        power_window = power[start_id:t]
+        if len(power_window) > 0:
+            return np.mean(power[start_id:t])
+        else:
+            return power[start_id]

@@ -11,7 +11,6 @@ class SegmentProcessor:
         equipment_weight_kg=10,
         c_RR=0.005,
         cda=0.5,
-        power_scale_factor=1.0,
         drive_train_efficiency=0.9,
     ):
         self.segment = segment
@@ -19,10 +18,9 @@ class SegmentProcessor:
         self.c_RR = c_RR
         self.cda = cda
         self.epsilon = 1e-2
-        self.power_scale_factor = power_scale_factor
         self.drive_train_efficiency = drive_train_efficiency
 
-    def power_based_finish_time(self, power_watts: float):
+    def power_based_finish_time(self):
         s0_mps = self.segment.segment_df["spd_mps"].values
         x0_m = self.segment.segment_df["dist_m"].values
         t = self.segment.segment_df["sec"].values
@@ -35,7 +33,7 @@ class SegmentProcessor:
                 predicted_time,
                 predicted_dist,
                 predicted_spd,
-            ) = self.estimate_time_to_finish(power_watts, x0_m[i], s0_mps[i])
+            ) = self.estimate_time_to_finish(x0_m[i], s0_mps[i])
 
             remaining_times[i] = predicted_time[-1]
             total_times[i] = (t[i] - t[0]) + predicted_time[-1]
@@ -43,7 +41,6 @@ class SegmentProcessor:
 
     def estimate_time_to_finish(
         self,
-        power_watts: float,
         segment_distance_traveled_m: float,
         initial_speed_mps: float,
         power_window_sec=30,

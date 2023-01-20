@@ -11,7 +11,7 @@ class SegmentProcessor:
         equipment_weight_kg=10,
         c_RR=0.005,
         cda=0.5,
-        power_scale_factor=0.96,
+        power_scale_factor=1.0,
         drive_train_efficiency=0.9,
     ):
         self.segment = segment

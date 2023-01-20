@@ -43,7 +43,7 @@ class SegmentProcessor:
         self,
         segment_distance_traveled_m: float,
         initial_speed_mps: float,
-        power_window_sec=30,
+        power_window_sec=60,
     ):
         # Test method to calculate speed as a function of time
 

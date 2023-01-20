@@ -86,4 +86,5 @@ line_ani = animation.FuncAnimation(
 # writergif = animation.PillowWriter(fps=len(distance)/6)
 # line_ani.save(f, writer=writergif)
 
+plt.legend()
 plt.show()

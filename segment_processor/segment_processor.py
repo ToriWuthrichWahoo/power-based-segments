@@ -19,6 +19,7 @@ class SegmentProcessor:
         self.cda = cda
         self.epsilon = 1e-2
         self.drive_train_efficiency = drive_train_efficiency
+        self.g = 9.806
 
     def power_based_finish_time(self):
         s0_mps = self.segment.segment_df["spd_mps"].values
@@ -69,8 +70,8 @@ class SegmentProcessor:
             grade_i = grade[grade_id]
 
             f_wind = 0.5 * self.cda * (s**2)
-            f_rolling = self.m_total * 9.806 * self.c_RR
-            f_slope = self.m_total * 9.806 * grade_i
+            f_rolling = self.m_total * self.g * self.c_RR
+            f_slope = self.m_total * self.g * grade_i
             if s > self.epsilon:
                 f_rider = self.drive_train_efficiency * power_i / s
             else:

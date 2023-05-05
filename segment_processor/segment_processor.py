@@ -20,6 +20,7 @@ class SegmentProcessor:
         self.epsilon = 1e-2
         self.drive_train_efficiency = drive_train_efficiency
         self.g = 9.806
+        self.dt_refine_s = 60
 
     def power_based_finish_time(self):
         s0_mps = self.segment.segment_df["spd_mps"].values
@@ -27,6 +28,9 @@ class SegmentProcessor:
         t = self.segment.segment_df["sec"].values
         remaining_times = np.zeros(len(x0_m))
         total_times = np.zeros(len(x0_m))
+        t_refine = t[0]
+
+        x_start = x0_m[0]
 
         # Each time we want to update the prediction, we know where we currently are, and how fast we are going based on the GPS.
         for i in range(len(x0_m)):
@@ -34,15 +38,24 @@ class SegmentProcessor:
                 predicted_time,
                 predicted_dist,
                 predicted_spd,
-            ) = self.estimate_time_to_finish(x0_m[i], s0_mps[i])
+            ) = self.estimate_time_to_finish(x0_m[i], x0_m[-1], s0_mps[i])
 
             remaining_times[i] = predicted_time[-1]
             total_times[i] = (t[i] - t[0]) + predicted_time[-1]
+
+            dt_refine = t[i] - t_refine
+            if dt_refine >= self.dt_refine_s:
+                print("Refining Parameters t = ", t[i])
+                self.refine_parameters(s0_mps[0], x0_m[0], x0_m[i])
+                print("--actual time = ", t[i] - t[0], " sec")
+                t_refine = t[i]
+
         return (t, x0_m, total_times, remaining_times)
 
     def estimate_time_to_finish(
         self,
         segment_distance_traveled_m: float,
+        end_distance_m: float,
         initial_speed_mps: float,
         power_window_sec=60,
     ):
@@ -82,7 +95,7 @@ class SegmentProcessor:
             x_out.append(x + s * dt)
 
             # If we've crossed the end distance, break out of the loop
-            if x_out[i] >= dist[-1]:
+            if x_out[i] >= end_distance_m:
                 break
             i += 1
 
@@ -90,9 +103,18 @@ class SegmentProcessor:
 
     def get_avg_power_last_n_sec(self, t, window_size_sec):
         power = self.segment.segment_df["pwr_watts"].values
-        start_id = max(1, t - window_size_sec)
-        power_window = power[start_id:t]
+        start_id = min(max(1, t - window_size_sec), len(power) - 1)
+        end_id = min(t, len(power) - 1)
+        power_window = power[start_id:end_id]
         if len(power_window) > 0:
-            return np.mean(power[start_id:t])
+            return np.mean(power[start_id:end_id])
         else:
             return power[start_id]
+
+    def refine_parameters(self, s_mps, x_start_m, x_end_m):
+        (
+            predicted_time,
+            predicted_dist,
+            predicted_spd,
+        ) = self.estimate_time_to_finish(x_start_m, x_end_m, s_mps)
+        print("--predicted time = ", predicted_time[-1] - predicted_time[0], " sec")

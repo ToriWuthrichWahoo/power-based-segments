@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from segment.segment import Segment
+import matplotlib.pyplot as plt
 
 
 class SegmentProcessor:
@@ -15,12 +16,15 @@ class SegmentProcessor:
     ):
         self.segment = segment
         self.m_total = rider_weight_kg + equipment_weight_kg
+        self.m_total_est = self.m_total
         self.c_RR = c_RR
         self.cda = cda
         self.epsilon = 1e-2
         self.drive_train_efficiency = drive_train_efficiency
         self.g = 9.806
         self.dt_refine_s = 60
+        self.t_refine_s = []
+        self.m_refine_s = [self.m_total]
 
     def power_based_finish_time(self):
         s0_mps = self.segment.segment_df["spd_mps"].values
@@ -46,9 +50,28 @@ class SegmentProcessor:
             dt_refine = t[i] - t_refine
             if dt_refine >= self.dt_refine_s:
                 print("Refining Parameters t = ", t[i])
-                self.refine_parameters(s0_mps[0], x0_m[0], x0_m[i])
-                print("--actual time = ", t[i] - t[0], " sec")
+
+                t_est_to_current = self.estimate_time_to_current_point(
+                    s0_mps[0], x0_m[0], x0_m[i]
+                )
+                t_actual_to_current = t[i] - t[0]
+                pct_error = (
+                    t_est_to_current - t_actual_to_current
+                ) / t_actual_to_current
+                print("--Previous mass: ", self.m_total_est)
+
+                self.m_total_est = self.m_total_est - pct_error * self.m_total_est
+                print("--Updated mass: ", self.m_total_est)
                 t_refine = t[i]
+                self.t_refine_s.append(t_refine)
+                self.m_refine_s.append(self.m_total_est)
+
+        # plt.figure()
+        # plt.plot(self.t_refine_s, self.m_refine_s)
+        # plt.grid(True)
+        # plt.xlabel("Distance (m)")
+        # plt.ylabel("Rider + Bike Weight (kg)")
+        # plt.title("Rider + Bike estimate")
 
         return (t, x0_m, total_times, remaining_times)
 
@@ -83,14 +106,14 @@ class SegmentProcessor:
             grade_i = grade[grade_id]
 
             f_wind = 0.5 * self.cda * (s**2)
-            f_rolling = self.m_total * self.g * self.c_RR
-            f_slope = self.m_total * self.g * grade_i
+            f_rolling = self.m_total_est * self.g * self.c_RR
+            f_slope = self.m_total_est * self.g * grade_i
             if s > self.epsilon:
                 f_rider = self.drive_train_efficiency * power_i / s
             else:
                 f_rider = 0
 
-            a = (f_rider - f_wind - f_rolling - f_slope) / self.m_total
+            a = (f_rider - f_wind - f_rolling - f_slope) / self.m_total_est
             spd_out.append(s + a * dt)
             x_out.append(x + s * dt)
 
@@ -111,10 +134,11 @@ class SegmentProcessor:
         else:
             return power[start_id]
 
-    def refine_parameters(self, s_mps, x_start_m, x_end_m):
+    def estimate_time_to_current_point(self, s_mps, x_start_m, x_end_m):
         (
             predicted_time,
             predicted_dist,
             predicted_spd,
         ) = self.estimate_time_to_finish(x_start_m, x_end_m, s_mps)
-        print("--predicted time = ", predicted_time[-1] - predicted_time[0], " sec")
+        # print("--predicted time = ", predicted_time[-1] - predicted_time[0], " sec")
+        return predicted_time[-1] - predicted_time[0]
